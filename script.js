@@ -233,6 +233,7 @@ const submitButton = document.getElementById('submit-btn');
 const scoreSpan = document.getElementById('score');
 const totalQuestionsSpan = document.getElementById('total-questions');
 const restartButton = document.getElementById('restart-btn');
+
 const showHintButton = document.createElement('button'); // Novo botão para a dica
 showHintButton.id = 'show-hint-btn';
 showHintButton.textContent = 'Mostrar Dica';
@@ -241,8 +242,19 @@ showHintButton.style.backgroundColor = '#6c757d'; // Cor cinza para a dica
 showHintButton.style.width = 'fit-content'; // Ajusta a largura
 showHintButton.style.display = 'block'; // Garante que ocupe sua própria linha
 
-// Adiciona o botão de dica ao quiz container
+const backButton = document.createElement('button'); // Novo botão para voltar
+backButton.id = 'back-btn';
+backButton.textContent = 'Voltar';
+backButton.style.marginTop = '15px';
+backButton.style.backgroundColor = '#6c757d';
+backButton.style.width = 'fit-content';
+backButton.style.display = 'block';
+backButton.style.marginRight = '10px'; // Espaçamento entre botões
+
+// Adiciona os botões de dica e voltar ao quiz container
 quizContainer.insertBefore(showHintButton, submitButton);
+quizContainer.insertBefore(backButton, showHintButton);
+
 
 const hintDisplay = document.createElement('p');
 hintDisplay.id = 'hint-display';
@@ -259,18 +271,26 @@ function loadQuestion() {
         resultContainer.style.display = 'none';
 
         const questionData = questions[currentQuestionIndex];
-        questionText.textContent = questionData.question;
+        // Adiciona numeração à pergunta
+        questionText.textContent = `${currentQuestionIndex + 1}. ${questionData.question}`;
         optionsContainer.innerHTML = '';
         selectedOption = null;
         submitButton.disabled = true;
-        submitButton.textContent = 'Próxima Pergunta'; // Resetar texto do botão
-        submitButton.removeEventListener('click', nextQuestion); // Remove listener de nextQuestion
-        submitButton.addEventListener('click', checkAnswer); // Adiciona listener para checkAnswer
+        submitButton.textContent = 'Verificar Resposta'; // Texto inicial do botão para verificar
+        submitButton.removeEventListener('click', nextQuestion);
+        submitButton.addEventListener('click', checkAnswer);
+
+        // Habilita/desabilita botão "Voltar"
+        backButton.disabled = currentQuestionIndex === 0;
 
         // Oculta e limpa a dica
         hintDisplay.style.display = 'none';
         hintDisplay.textContent = '';
-        showHintButton.style.display = 'block'; // Mostra o botão de dica
+        showHintButton.style.display = 'block'; // Mostra o botão de dica novamente
+
+        // Re-habilita cliques nas opções
+        document.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'auto');
+
 
         questionData.options.forEach((option, index) => {
             const optionDiv = document.createElement('div');
@@ -320,7 +340,7 @@ function checkAnswer() {
     // Exibir o rationale
     const rationaleDiv = document.createElement('div');
     rationaleDiv.classList.add('rationale');
-    rationaleDiv.innerHTML = `**Justificativa:** ${questionData.options[correctOptionIndex].rationale}`; // Usar innerHTML para negrito
+    rationaleDiv.innerHTML = `**Justificativa:** ${questionData.options[correctOptionIndex].rationale}`;
     optionsContainer.appendChild(rationaleDiv);
 
     // Oculta o botão de dica e exibe a dica se não estiver visível (após a resposta)
@@ -340,6 +360,13 @@ function checkAnswer() {
 function nextQuestion() {
     currentQuestionIndex++;
     loadQuestion();
+}
+
+function previousQuestion() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        loadQuestion();
+    }
 }
 
 function showResult() {
@@ -362,8 +389,9 @@ restartButton.addEventListener('click', restartQuiz);
 showHintButton.addEventListener('click', () => {
     hintDisplay.textContent = `Dica: ${questions[currentQuestionIndex].hint}`;
     hintDisplay.style.display = 'block';
-    showHintButton.style.display = 'none'; // Esconde o botão de dica depois de mostrar
+    showHintButton.style.display = 'none';
 });
+backButton.addEventListener('click', previousQuestion);
 
 
 // Inicia o quiz ao carregar a página
