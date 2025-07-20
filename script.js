@@ -221,10 +221,14 @@ const questions = [
     }
 ];
 
+// Variáveis de estado do quiz
 let currentQuestionIndex = 0;
 let score = 0;
-let selectedOption = null;
+// Armazena as respostas do usuário para cada questão
+// Formato: { questionIndex: { selectedOptionIndex: N, answeredCorrectly: true/false } }
+let userAnswers = {}; 
 
+// Elementos do DOM
 const quizContainer = document.getElementById('quiz-container');
 const resultContainer = document.getElementById('result-container');
 const questionText = document.getElementById('question-text');
@@ -233,65 +237,55 @@ const submitButton = document.getElementById('submit-btn');
 const scoreSpan = document.getElementById('score');
 const totalQuestionsSpan = document.getElementById('total-questions');
 const restartButton = document.getElementById('restart-btn');
+const questionCounterSpan = document.getElementById('current-q');
+const totalQuestionCountSpan = document.getElementById('total-q');
+const approvalStatusParagraph = document.getElementById('approval-status');
 
-const showHintButton = document.createElement('button'); // Novo botão para a dica
-showHintButton.id = 'show-hint-btn';
-showHintButton.textContent = 'Mostrar Dica';
-showHintButton.style.marginTop = '15px'; // Espaçamento
-showHintButton.style.backgroundColor = '#6c757d'; // Cor cinza para a dica
-showHintButton.style.width = 'fit-content'; // Ajusta a largura
-showHintButton.style.display = 'block'; // Garante que ocupe sua própria linha
-
-const backButton = document.createElement('button'); // Novo botão para voltar
-backButton.id = 'back-btn';
-backButton.textContent = 'Voltar';
-backButton.style.marginTop = '15px';
-backButton.style.backgroundColor = '#6c757d';
-backButton.style.width = 'fit-content';
-backButton.style.display = 'block';
-backButton.style.marginRight = '10px'; // Espaçamento entre botões
-
-// Adiciona os botões de dica e voltar ao quiz container
-quizContainer.insertBefore(showHintButton, submitButton);
-quizContainer.insertBefore(backButton, showHintButton);
+// Botões de navegação e dica
+const showHintButton = document.getElementById('show-hint-btn');
+const backButton = document.getElementById('back-btn');
+const hintDisplay = document.getElementById('hint-display');
 
 
-const hintDisplay = document.createElement('p');
-hintDisplay.id = 'hint-display';
-hintDisplay.style.color = '#555';
-hintDisplay.style.fontSize = '0.9em';
-hintDisplay.style.marginTop = '10px';
-hintDisplay.style.display = 'none'; // Escondido por padrão
-quizContainer.insertBefore(hintDisplay, showHintButton);
+// --- Funções do Quiz ---
 
-
+// Carrega a pergunta atual na interface
 function loadQuestion() {
     if (currentQuestionIndex < questions.length) {
         quizContainer.style.display = 'block';
         resultContainer.style.display = 'none';
 
         const questionData = questions[currentQuestionIndex];
-        // Adiciona numeração à pergunta
+        
+        // Atualiza o contador de perguntas
+        questionCounterSpan.textContent = currentQuestionIndex + 1;
+        totalQuestionCountSpan.textContent = questions.length;
         questionText.textContent = `${currentQuestionIndex + 1}. ${questionData.question}`;
+        
         optionsContainer.innerHTML = '';
-        selectedOption = null;
-        submitButton.disabled = true;
+        submitButton.disabled = true; // Desabilita o botão até uma opção ser selecionada
         submitButton.textContent = 'Verificar Resposta'; // Texto inicial do botão para verificar
-        submitButton.removeEventListener('click', nextQuestion);
-        submitButton.addEventListener('click', checkAnswer);
 
-        // Habilita/desabilita botão "Voltar"
-        backButton.disabled = currentQuestionIndex === 0;
+        // Remove listeners para evitar múltiplos acionamentos
+        submitButton.removeEventListener('click', nextQuestion); 
+        submitButton.removeEventListener('click', checkAnswer);
+        submitButton.addEventListener('click', checkAnswer); // Adiciona listener para verificar
+
+        // Lógica de exibição e habilitação do botão "Voltar"
+        if (currentQuestionIndex === 0) {
+            backButton.style.display = 'none'; // Oculta na primeira pergunta
+        } else {
+            backButton.style.display = 'block'; // Mostra a partir da segunda
+        }
+        backButton.disabled = currentQuestionIndex === 0; // Desabilita na primeira
 
         // Oculta e limpa a dica
         hintDisplay.style.display = 'none';
         hintDisplay.textContent = '';
-        showHintButton.style.display = 'block'; // Mostra o botão de dica novamente
+        showHintButton.style.display = 'block'; // Mostra o botão de dica
+        showHintButton.disabled = false; // Habilita o botão de dica
 
-        // Re-habilita cliques nas opções
-        document.querySelectorAll('.option').forEach(opt => opt.style.pointerEvents = 'auto');
-
-
+        // Cria as opções da pergunta
         questionData.options.forEach((option, index) => {
             const optionDiv = document.createElement('div');
             optionDiv.classList.add('option');
@@ -300,20 +294,28 @@ function loadQuestion() {
             optionDiv.addEventListener('click', () => selectOption(optionDiv, index));
             optionsContainer.appendChild(optionDiv);
         });
+
+        // Restaura o estado da resposta se já foi respondida
+        if (userAnswers[currentQuestionIndex]) {
+            restoreAnswerState(userAnswers[currentQuestionIndex]);
+        }
     } else {
-        showResult();
+        showResult(); // Exibe o resultado se todas as perguntas foram respondidas
     }
 }
 
+// Seleciona uma opção e habilita o botão de submissão
 function selectOption(optionDiv, index) {
-    // Remove 'selected' de todas as opções
-    document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-    // Adiciona 'selected' à opção clicada
-    optionDiv.classList.add('selected');
-    selectedOption = index;
-    submitButton.disabled = false;
+    // Apenas permita a seleção se a pergunta ainda não foi respondida ou se está em modo de "revisão"
+    if (!userAnswers[currentQuestionIndex] || userAnswers[currentQuestionIndex].selectedOptionIndex === undefined) {
+        document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+        optionDiv.classList.add('selected');
+        selectedOption = index;
+        submitButton.disabled = false;
+    }
 }
 
+// Verifica a resposta do usuário
 function checkAnswer() {
     if (selectedOption === null) return; // Nenhuma opção selecionada
 
@@ -327,15 +329,35 @@ function checkAnswer() {
     const selectedOptionDiv = optionsContainer.children[selectedOption];
     const correctOptionDiv = optionsContainer.children[correctOptionIndex];
 
+    let answeredCorrectly = false;
     if (questionData.options[selectedOption].isCorrect) {
         selectedOptionDiv.classList.add('correct');
-        score++;
+        answeredCorrectly = true;
     } else {
         selectedOptionDiv.classList.add('incorrect');
         if (correctOptionDiv) {
             correctOptionDiv.classList.add('correct');
         }
     }
+
+    // Armazenar a resposta do usuário para esta sessão
+    userAnswers[currentQuestionIndex] = {
+        selectedOptionIndex: selectedOption,
+        answeredCorrectly: answeredCorrectly
+    };
+    
+    // Se a resposta foi correta e não estava marcada como tal, incrementa o score
+    // Isso previne que o score aumente ao voltar e avançar sem responder novamente
+    if (answeredCorrectly && !questionData.answeredThisSession) {
+        score++;
+        questionData.answeredThisSession = true; // Marca que esta pergunta já contribuiu para o score
+    } else if (!answeredCorrectly && questionData.answeredThisSession) {
+        // Se a resposta se tornou incorreta (o que não deve acontecer se o fluxo for de "verificar" uma vez)
+        // ou se o usuário muda a resposta de certa para errada (não permitido neste fluxo),
+        // precisaríamos de uma lógica mais complexa para decrementar o score.
+        // Neste modelo, o score só aumenta e não diminui.
+    }
+
 
     // Exibir o rationale
     const rationaleDiv = document.createElement('div');
@@ -345,23 +367,72 @@ function checkAnswer() {
 
     // Oculta o botão de dica e exibe a dica se não estiver visível (após a resposta)
     showHintButton.style.display = 'none';
-    if (questionData.hint && hintDisplay.style.display === 'none') {
-        hintDisplay.textContent = `Dica: ${questionData.hint}`;
-        hintDisplay.style.display = 'block';
-    }
+    hintDisplay.textContent = `Dica: ${questionData.hint}`;
+    hintDisplay.style.display = 'block';
 
 
     submitButton.textContent = 'Próxima Pergunta';
-    submitButton.disabled = false;
     submitButton.removeEventListener('click', checkAnswer);
     submitButton.addEventListener('click', nextQuestion);
+    submitButton.disabled = false; // Garante que o botão esteja habilitado para ir para a próxima
 }
 
+// Restaura o estado da pergunta quando o usuário volta
+function restoreAnswerState(answerState) {
+    const questionData = questions[currentQuestionIndex];
+    const options = optionsContainer.children;
+    
+    // Remove qualquer classe de feedback anterior para evitar duplicidade
+    Array.from(options).forEach(opt => opt.classList.remove('selected', 'correct', 'incorrect'));
+
+    // Seleciona a opção que o usuário escolheu
+    if (answerState.selectedOptionIndex !== undefined && options[answerState.selectedOptionIndex]) {
+        options[answerState.selectedOptionIndex].classList.add('selected');
+    }
+
+    // Marca a opção correta e a selecionada com feedback visual
+    const correctOptionIndex = questionData.options.findIndex(opt => opt.isCorrect);
+    if (correctOptionIndex !== -1 && options[correctOptionIndex]) {
+        options[correctOptionIndex].classList.add('correct');
+    }
+    
+    if (answerState.selectedOptionIndex !== undefined && !questionData.options[answerState.selectedOptionIndex].isCorrect) {
+        options[answerState.selectedOptionIndex].classList.add('incorrect');
+    }
+
+    // Exibe a justificativa
+    const existingRationale = optionsContainer.querySelector('.rationale');
+    if (existingRationale) {
+        existingRationale.remove();
+    }
+    const rationaleDiv = document.createElement('div');
+    rationaleDiv.classList.add('rationale');
+    rationaleDiv.innerHTML = `**Justificativa:** ${questionData.options[correctOptionIndex].rationale}`;
+    optionsContainer.appendChild(rationaleDiv);
+
+    // Desabilita cliques nas opções
+    Array.from(options).forEach(opt => opt.style.pointerEvents = 'none');
+
+    // Ajusta o botão de submissão para "Próxima Pergunta"
+    submitButton.textContent = 'Próxima Pergunta';
+    submitButton.removeEventListener('click', checkAnswer);
+    submitButton.addEventListener('click', nextQuestion);
+    submitButton.disabled = false; // Sempre habilitado para navegar
+
+    // Exibe a dica
+    hintDisplay.textContent = `Dica: ${questionData.hint}`;
+    hintDisplay.style.display = 'block';
+    showHintButton.style.display = 'none'; // Esconde o botão de dica
+}
+
+
+// Avança para a próxima pergunta
 function nextQuestion() {
     currentQuestionIndex++;
     loadQuestion();
 }
 
+// Volta para a pergunta anterior
 function previousQuestion() {
     if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
@@ -369,30 +440,45 @@ function previousQuestion() {
     }
 }
 
+// Exibe a tela de resultados
 function showResult() {
     quizContainer.style.display = 'none';
     resultContainer.style.display = 'block';
     scoreSpan.textContent = score;
     totalQuestionsSpan.textContent = questions.length;
+
+    const percentage = (score / questions.length) * 100;
+    const approvalThreshold = 70; // 70% para aprovação
+
+    if (percentage >= approvalThreshold) {
+        approvalStatusParagraph.textContent = `Parabéns! Você foi APROVADO(A) com ${percentage.toFixed(2)}% de acertos!`;
+        approvalStatusParagraph.style.color = '#28a745'; // Verde
+    } else {
+        approvalStatusParagraph.textContent = `Que pena! Você obteve ${percentage.toFixed(2)}% de acertos. É necessário 70% para ser aprovado(a). Continue estudando!`;
+        approvalStatusParagraph.style.color = '#dc3545'; // Vermelho
+    }
 }
 
+// Reinicia o quiz
 function restartQuiz() {
     currentQuestionIndex = 0;
     score = 0;
     selectedOption = null;
+    userAnswers = {}; // Limpa todas as respostas salvas na sessão
+    // Reseta o estado answeredThisSession para todas as perguntas
+    questions.forEach(q => delete q.answeredThisSession);
     loadQuestion();
 }
 
-// Event Listeners
+// --- Event Listeners ---
 submitButton.addEventListener('click', checkAnswer);
 restartButton.addEventListener('click', restartQuiz);
 showHintButton.addEventListener('click', () => {
     hintDisplay.textContent = `Dica: ${questions[currentQuestionIndex].hint}`;
     hintDisplay.style.display = 'block';
-    showHintButton.style.display = 'none';
+    showHintButton.style.display = 'none'; // Esconde o botão de dica depois de mostrar
 });
 backButton.addEventListener('click', previousQuestion);
-
 
 // Inicia o quiz ao carregar a página
 loadQuestion();

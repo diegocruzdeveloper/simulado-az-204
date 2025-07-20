@@ -9,14 +9,22 @@
 <body>
     <div class="container">
         <h1>Simulado AZ-204: Desenvolvendo Soluções para Microsoft Azure</h1>
+        <p id="question-counter" style="text-align: center; margin-bottom: 20px; font-weight: bold; color: #0078d4;">Questão <span id="current-q">1</span> de <span id="total-q">20</span></p>
+
         <div id="quiz-container">
             <div id="question-text"></div>
             <div id="options-container" class="options-container"></div>
-            <button id="submit-btn" disabled>Próxima Pergunta</button>
+            <p id="hint-display" style="display: none;"></p>
+            <div id="button-group" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                <button id="back-btn" style="background-color: #6c757d; width: fit-content; margin-right: 10px; display: none;">Voltar</button>
+                <button id="show-hint-btn" style="background-color: #6c757d; width: fit-content; margin-right: 10px; display: none;">Mostrar Dica</button>
+                <button id="submit-btn" disabled style="flex-grow: 1;">Verificar Resposta</button>
+            </div>
         </div>
         <div id="result-container" style="display: none;">
             <h2>Simulado Concluído!</h2>
             <p>Você acertou <span id="score">0</span> de <span id="total-questions">0</span> perguntas.</p>
+            <p id="approval-status"></p>
             <button id="restart-btn">Refazer Simulado</button>
         </div>
     </div>
