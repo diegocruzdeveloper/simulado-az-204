@@ -21,13 +21,17 @@
                 <button id="submit-btn" disabled style="flex-grow: 1;">Verificar Resposta</button>
             </div>
         </div>
+
+        <div id="exam-controls" style="text-align: center; margin-top: 20px;">
+            <button id="change-exam-btn" style="background-color: #0078d4; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em;">Trocar de Exame</button>
+        </div>
+
         <div id="result-container" style="display: none;">
             <h2>Simulado Concluído!</h2>
             <p>Você acertou <span id="score">0</span> de <span id="total-questions">0</span> perguntas.</p>
             <p id="approval-status"></p>
             <button id="restart-btn">Refazer Simulado</button>
-            <button id="change-exam-btn" style="margin-top: 10px;">Trocar de Exame</button>
-        </div>
+            </div>
     </div>
     <script src="script.js"></script>
 </body>
