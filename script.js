@@ -1,6 +1,6 @@
 // --- Definição das Questões ---
 
-// Perguntas para o EXAME 1 (34 Questões)
+// Perguntas para o EXAME 1 (24 Questões)
 const questionsExam1 = [
     {
         question: 'Quais são as cinco instruções mais comuns e essenciais em um Dockerfile para construir uma imagem de contêiner?',
@@ -132,8 +132,6 @@ const questionsExam1 = [
         ],
         hint: 'Pense em como o APIM permite modificar o comportamento das APIs sem alterar o código do backend.'
     },
-
-    // NOVAS PERGUNTAS INSERIDAS DO LEARN (25 Questões) - sem imagens
     {
         question: 'Você precisa criar um contêiner em um grupo de contêineres e montar um compartilhamento de arquivos do Azure como volume. Qual segmento de código você deve usar?',
         options: [
@@ -533,150 +531,10 @@ const questionsExam1 = [
             { text: 'Crie uma consulta personalizada do Kusto para recalcular as métricas a partir dos dados de telemetria brutos.', isCorrect: false, rationale: 'A criação de uma consulta personalizada do Kusto exigiria esforço manual contínuo e não resolve o problema da amostragem afetando a *coleta* original da telemetria bruta. As métricas pré-agregadas já fornecem a solução mais eficiente para este cenário.' }
         ],
         hint: 'Para garantir a precisão das métricas do Application Insights, mesmo com amostragem de telemetria para alto volume, qual tipo de métrica é inerentemente projetado para ser preciso por ser pré-calculado?'
-    },
-    {
-        question: 'Uma empresa usa o Gerenciamento de API do Azure para expor alguns de seus serviços. Cada desenvolvedor que consome APIs deve usar uma única chave para obter acesso a várias APIs sem a necessidade de aprovação do editor de API. Você precisa recomendar uma solução. Qual solução você deve recomendar?',
-        options: [
-            { text: 'Defina uma assinatura com o escopo do produto.', isCorrect: true, rationale: 'Ao criar um produto no Azure API Management, várias APIs podem ser adicionadas a ele. Uma única assinatura pode ser associada a esse produto, permitindo que um desenvolvedor obtenha uma única chave que conceda acesso a todas as APIs dentro desse produto, sem a necessidade de aprovação individual por API. Isso atende ao requisito de uma única chave para várias APIs e minimiza a sobrecarga de aprovação.' },
-            { text: 'Defina uma assinatura com o escopo de todas as APIs.', isCorrect: false, rationale: 'Embora uma assinatura possa ser criada com escopo para "todas as APIs", esta opção pode conceder acesso mais amplo do que o necessário, e a questão sugere um agrupamento lógico, o que os produtos oferecem.' },
-            { text: 'Conceda acesso a cada desenvolvedor independentemente do endereço IP do chamador.', isCorrect: false, rationale: 'Conceder acesso independente do IP é uma configuração de segurança, não uma solução para o requisito de uma única chave para várias APIs sem aprovação individual.' },
-            { text: 'Use um certificado de cliente por desenvolvedor e configure uma política para validar o certificado.', isCorrect: false, rationale: 'Um certificado de cliente pode ser usado para autenticação forte, mas não resolve o problema de "uma única chave para várias APIs sem aprovação do editor". Exigiria gerenciamento de certificados por desenvolvedor.' }
-        ],
-        hint: 'No Azure API Management, qual entidade permite agrupar múltiplas APIs e atribuir uma única chave de assinatura que dá acesso a todas elas?'
-    },
-    {
-        question: 'Você gerencia APIs em produção usando o Gerenciamento de API do Azure. Você precisa remover cabeçalhos `X-Powered-By` e `X-AspNet-Version` de uma resposta. Qual segmento de código você deve usar? (Assuma que o código fornecido representa uma política XML de APIM.)',
-        options: [
-            { text: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><set-header name="X-Powered-By" exists-action="delete" /><set-header name="X-AspNet-Version" exists-action="delete" /><base /></outbound><on-error><base /></on-error></policies>', isCorrect: true, rationale: 'O segmento de código que inclui o elemento `set-header policy` na seção `<outbound>` (onde as respostas são processadas) com `exists-action="delete"` removerá um cabeçalho específico da resposta HTTP. Remover os cabeçalhos `X-Powered-By` e `X-AspNet-Version` é uma prática comum de segurança para evitar vazamento de informações sobre a tecnologia subjacente.' },
-            { text: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><set-header name="X-Powered-By" exists-action="append" /><set-header name="X-AspNet-Version" exists-action="append" /><base /></outbound><on-error><base /></on-error></policies>', isCorrect: false, rationale: 'O segmento de código que inclui `exists-action="append"` não remove os cabeçalhos especificados; ele tentaria anexar um valor, o que não é o objetivo aqui.' },
-            { text: '<policies><inbound><set-header name="X-Powered-By" exists-action="delete" /><set-header name="X-AspNet-Version" exists-action="delete" /><base /></inbound><backend><base /></backend><outbound><base /></outbound><on-error><base /></on-error></policies>', isCorrect: false, rationale: 'Os cabeçalhos de resposta são processados na seção `<outbound>` (saída), não na seção `<inbound>` (entrada). A política aplicada na entrada afetaria a requisição, não a resposta.' },
-            { text: '<policies><backend><set-header name="X-Powered-By" exists-action="delete" /><set-header name="X-AspNet-Version" exists-action="delete" /><base /></backend><inbound><base /></inbound><outbound><base /></outbound><on-error><base /></on-error></policies>', isCorrect: false, rationale: 'As políticas na seção `<backend>` são aplicadas à requisição *antes* de ser enviada ao serviço de *backend*. A remoção de cabeçalhos de resposta deve ocorrer na seção `<outbound>`.' }
-        ],
-        hint: 'Para remover cabeçalhos específicos de uma resposta de API no Azure API Management, em qual seção de política você usaria a política `set-header` e com qual ação?'
-    },
-    {
-        question: 'Você planeja usar o Gerenciamento de API do Azure para gerenciamento de API híbrida e multinuvem. Você precisa criar um gateway auto-hospedado para produção. Qual marca de imagem de contêiner você deve usar?',
-        options: [
-            { text: '2.9.0 (exemplo de uma tag semântica específica)', isCorrect: true, rationale: 'Na produção, a versão do gateway auto-hospedado deve ser *fixada* para garantir estabilidade e evitar atualizações automáticas que possam introduzir regressões. A única maneira de fazer isso de forma confiável é usando uma tag que segue a convenção de versionamento semântico `{major}.{minor}.{patch}` (ex: `2.9.0`).' },
-            { text: 'latest', isCorrect: false, rationale: 'A tag `latest` não é recomendada para ambientes de produção porque ela pode mudar a qualquer momento, resultando em atualizações não controladas e potenciais quebras. É usada principalmente para avaliação e desenvolvimento.' },
-            { text: 'v3', isCorrect: false, rationale: 'A tag `v3` (ou qualquer tag de versão majoritária como `v1`, `v2`, etc.) resultará sempre na execução de uma versão majoritária com cada novo recurso e patch. Embora melhor que `latest`, ainda não fixa a versão exata como a convenção `{major}.{minor}.{patch}`.' },
-            { text: 'v3-preview', isCorrect: false, rationale: 'A tag `v3-preview` deve ser usada para executar a imagem de contêiner de visualização mais recente, o que não é adequado para produção devido à sua natureza de pré-lançamento e instabilidade potencial.' }
-        ],
-        hint: 'Em ambientes de produção com contêineres, qual prática de marcação de imagem é recomendada para garantir a estabilidade e evitar mudanças inesperadas?'
-    },
-    {
-        question: 'Uma empresa está usando o Gerenciamento de API do Azure para expor suas APIs a parceiros externos. A empresa deseja garantir que as APIs sejam acessíveis somente aos usuários autenticados com o OAuth 2.0 e que as cotas de uso sejam impostas para evitar abusos. Você precisa configurar a instância de Gerenciamento de API para atender aos requisitos de segurança e uso. Quais são as duas ações que você deve executar?',
-        options: [
-            { text: 'Configure uma política `validate-jwt` para autenticar solicitações de entrada. e Configure um limite de taxa por política de chave para impor cotas de chamadas.', isCorrect: true, rationale: 'A configuração de uma política `validate-jwt` é necessária para autenticar usuários com o OAuth 2.0, pois ela valida os tokens JWT presentes nas solicitações de entrada. Configurar um limite de taxa por política de chave (`rate-limit-by-key`) ajuda a impor cotas de uso, controlando o número de chamadas permitidas por cliente (chave) em um determinado período.' },
-            { text: 'Implante um Gateway de Aplicativo do Azure na frente da instância de Gerenciamento de API. e Configure a filtragem de IP na instância de Gerenciamento de API.', isCorrect: false, rationale: 'A implantação de um Gateway de Aplicativo do Azure não é necessária para essas necessidades específicas de autenticação e cotas de API. A filtragem de IP não atende aos requisitos de autenticação OAuth 2.0 ou de cotas de uso, pois controla o acesso à rede, não o acesso autenticado à API.' },
-            { text: 'Configure a autenticação básica para as APIs e o cache para melhorar o desempenho.', isCorrect: false, rationale: 'A autenticação básica não atende ao requisito de autenticação OAuth 2.0. O cache é para desempenho, não para segurança e cotas de uso.' },
-            { text: 'Defina grupos de usuários no Microsoft Entra ID para controle de acesso e configure políticas de CORS.', isCorrect: false, rationale: 'Definir grupos de usuários é para gerenciamento de acesso a recursos, mas não é uma ação direta no APIM para impor autenticação OAuth 2.0 ou cotas de uso. As políticas de CORS (Cross-Origin Resource Sharing) são para controle de acesso entre domínios, não para autenticação ou cotas.' }
-        ],
-        hint: 'Para autenticação OAuth 2.0 e imposição de cotas de uso no APIM, quais duas políticas são fundamentais para cada requisito, respectivamente?'
-    },
-    {
-        question: 'Você é um arquiteto de soluções de nuvem que trabalha em uma empresa que recentemente adotou os serviços de Gerenciamento de API do Microsoft Azure para centralizar o gerenciamento de suas APIs. A faculdade tem vários serviços de back-end que fornecem informações sobre cursos, docentes e serviços estudantis. Esses serviços são consumidos por vários aplicativos de front-end, incluindo o site público da faculdade, o portal do aluno e aplicativos móveis. Você precisa garantir que a instância de Gerenciamento de API esteja configurada para expor apenas as operações necessárias, manter a segurança e fornecer a capacidade de simular respostas para fins de teste sem invocar os serviços de back-end. O que você deve fazer?',
-        options: [
-            { text: 'Crie uma API em branco e defina manualmente as operações necessárias e implemente políticas para validar tokens JWT e limitar as taxas de chamada.', isCorrect: true, rationale: 'A criação de uma API em branco (e não a importação automática de um serviço de *backend* inteiro) permite um controle preciso sobre quais operações são expostas, atendendo ao requisito de "expor apenas as operações necessárias". Implementar políticas para validação JWT e limitação de taxa garante segurança e controle de uso. A capacidade de simular respostas para testes é inerente ao APIM quando as operações são definidas manualmente sem um *backend* real inicial.' },
-            { text: 'Importe todos os serviços de back-end como APIs para a instância de Gerenciamento de API e habilite o CORS para permitir solicitações dos domínios da faculdade.', isCorrect: false, rationale: 'A importação de *todos* os serviços de *backend* sem filtragem expõe operações desnecessárias, o que contradiz o requisito de "expor apenas as operações necessárias". Habilitar CORS é importante, mas não aborda a exposição controlada das operações.' },
-            { text: 'Exponha automaticamente todas as operações de todos os serviços de back-end e adicione um Web Application Firewall (WAF) para segurança.', isCorrect: false, rationale: 'Expor automaticamente todas as operações pode levar a riscos de segurança e não atende ao requisito de expor apenas as operações necessárias ou simular respostas para testes. Um WAF é uma camada de segurança de rede, não de controle de operações da API.' },
-            { text: 'Use uma operação curinga (`*`) para expor todos os endpoints do back-end e aplique o Azure Policy para impor segurança.', isCorrect: false, rationale: 'Usar uma operação curinga (`*`) para expor todos os endpoints pode tornar a API vulnerável a ameaças de segurança e não fornece o controle granular ou a capacidade de simular respostas para operações específicas. O Azure Policy é para governança, mas não substitui a configuração adequada das operações no APIM.' }
-        ],
-        hint: 'Para expor seletivamente operações de API, manter a segurança e permitir simulação de respostas no APIM, qual abordagem oferece o maior controle sobre as operações expostas e as políticas de segurança?'
-    },
-    {
-        question: 'Você é um arquiteto de soluções de nuvem que trabalha para uma empresa que planeja expor o serviço de processamento de dados interno deles, que atualmente está hospedado no Azure, aos parceiros deles por meio de APIs. O serviço processa grandes conjuntos de dados e fornece recursos de análise e relatório. A empresa deseja garantir que a API esteja bem documentada, que o acesso seja controlado com segurança e que as políticas de uso sejam impostas. Você precisa criar uma instância de Gerenciamento de API do Azure que permita acesso seguro e controlado às APIs com a capacidade de impor políticas de uso e documentar as APIs para seus parceiros. Quais são as três etapas que você deve executar?',
-        options: [
-            { text: 'Configure o acesso às APIs configurando a autorização de usuário do OAuth 2.0 na instância de Gerenciamento de API do Azure.; Crie uma instância de Gerenciamento de API do Azure e importe a API existente usando a funcionalidade de importação de API do portal do Azure.; Implemente políticas para as APIs na instância de Gerenciamento de API do Azure para impor limites de taxa e cotas.', isCorrect: true, rationale: 'Configurar a autorização de usuário do OAuth 2.0 na instância de Gerenciamento de API do Azure fornecerá controle de acesso seguro para as APIs. A criação de uma instância de Gerenciamento de API do Azure e a importação da API existente é uma maneira direta de expor o serviço interno aos parceiros. A implementação de políticas para as APIs na instância de Gerenciamento de API do Azure para impor limites de taxa e cotas é essencial para controlar o uso das APIs e atender aos requisitos de políticas de uso e documentação (que o APIM faz automaticamente com APIs importadas/definidas).' },
-            { text: 'Crie uma API simulada no Gerenciamento de API do Azure para testes.; Documente as APIs diretamente no código do serviço de processamento de dados.; Implemente políticas de CORS para todas as APIs.', isCorrect: false, rationale: 'Criar uma API simulada não atende à necessidade imediata de expor o serviço *real*. A documentação deve ser gerenciada na instância de Gerenciamento de API do Azure (portal do desenvolvedor), não no código do serviço para sincronização automática. Implementar políticas de CORS é útil, mas não cobre os requisitos de autenticação e cotas.' },
-            { text: 'Use o Azure DevOps para automatizar a implantação de APIs.; Utilize o Azure Functions para hospedar as APIs.; Habilite o log de diagnóstico em todas as APIs para auditoria.', isCorrect: false, rationale: 'Essas ações são sobre CI/CD, hospedagem e monitoramento, mas não as etapas diretas para *criar uma instância de Gerenciamento de API* com acesso seguro, políticas de uso e documentação para parceiros.' },
-            { text: 'Crie uma nova subscrição Azure para os parceiros.; Migre o serviço de processamento de dados para uma VM Azure.; Use Azure Key Vault para gerenciar chaves de API.', isCorrect: false, rationale: 'Criar uma nova subscrição, migrar para VM e usar Key Vault para chaves são ações de arquitetura e segurança, mas não as etapas diretas para *configurar o APIM* para os requisitos específicos de exposição, segurança, políticas e documentação da API.' }
-        ],
-        hint: 'Para expor uma API interna aos parceiros via APIM com segurança, controle de uso e documentação, quais são as três etapas fundamentais no processo de configuração do APIM?'
-    },
-    {
-        question: 'Você tem um hub de eventos do Azure. Você precisa adicionar partições ao hub de eventos. Qual segmento de código você deve usar?',
-        options: [
-            { text: 'az eventhubs eventhub update --resource-group MyResourceGroupName --namespace-name MyNamespaceName --name MyEventHubName --partition-count 12', isCorrect: true, rationale: 'O segmento de código `az eventhubs eventhub update` é o comando correto para modificar um hub de eventos existente e o parâmetro `--partition-count` é usado para adicionar partições a ele. Isso permite escalar a capacidade de ingestão do hub de eventos.' },
-            { text: 'az eventhubs eventhub consumer-group update --resource-group MyResourceGroupName --namespace-name MyNamespaceName --name MyEventHubName --partition-count 12', isCorrect: false, rationale: 'Este comando é usado para atualizar um *grupo de consumidores* de um hub de eventos, não o próprio hub de eventos para adicionar partições.' },
-            { text: 'az eventhubs eventhub consumer-group create --resource-group MyResourceGroupName --namespace-name MyNamespaceName --eventhub-name MyEventHubName --name MyConsumerGroup', isCorrect: false, rationale: 'Este comando é para criar um *grupo de consumidores*, não para adicionar partições a um hub de eventos.' },
-            { text: 'az eventhubs eventhub create --resource-group MyResourceGroupName --namespace-name MyNamespaceName --name MyEventHubName --partition-count 12', isCorrect: false, rationale: 'Este comando é para *criar* um novo hub de eventos com um número de partições, não para *adicionar* partições a um hub de eventos *existente*.' }
-        ],
-        hint: 'Para *modificar* um Event Hub existente e ajustar seu número de partições usando a CLI do Azure, qual subcomando de `az eventhubs eventhub` você utilizaria?'
-    },
-    {
-        question: 'Você desenvolve o código a seguir para ler todos os eventos publicados para a primeira partição nos Hubs de Eventos do Azure. Você precisa concluir o código. Quais são as duas ações que você deve executar? (Considere as linhas 6 e 7 do trecho de código onde as variáveis `startingPosition` e `partitionId` são definidas.)',
-        options: [
-            { text: 'Insira o seguinte segmento de código na linha 6: `EventPosition startingPosition = EventPosition.Earliest;` e Insira o seguinte segmento de código na linha 7: `string partitionId = (await consumer.GetPartitionIdsAsync()).First();`', isCorrect: true, rationale: 'Para ler *todos* os eventos publicados (desde o início), a posição inicial (`startingPosition`) deve ser definida como `EventPosition.Earliest`. Para obter o ID da primeira partição dinamicamente (para garantir que a leitura seja da primeira partição), o método `GetPartitionIdsAsync()` retorna uma lista de IDs de partição, e `.First()` é usado para selecionar o primeiro. Assim, `string partitionId = (await consumer.GetPartitionIdsAsync()).First();` é a sintaxe correta e completa.' },
-            { text: 'Insira o seguinte segmento de código na linha 6: `EventPosition startingPosition = EventPosition.Latest;` e Insira o seguinte segmento de código na linha 7: `string partitionId = (await consumer.GetPartitionIdsAsync()).First();`', isCorrect: false, rationale: 'Usar `EventPosition.Latest` iniciaria a leitura a partir dos eventos mais recentes, não de *todos* os eventos publicados (conforme o requisito de "ler todos os eventos").' },
-            { text: 'Insira o seguinte segmento de código na linha 6: `EventPosition startingPosition = EventPosition.Earliest;` e Insira o seguinte segmento de código na linha 7: `int partitionId = (await consumer.GetPartitionIdsAsync()).First();`', isCorrect: false, rationale: 'O método `GetPartitionIdsAsync()` retorna `string[]`, então `.First()` retornará uma `string`, não um `int`. Haveria um erro de tipo.' },
-            { text: 'Insira o seguinte segmento de código na linha 6: `var startingPosition = new EventPosition();` e Insira o seguinte segmento de código na linha 7: `string partitionId = "0";`', isCorrect: false, rationale: '`new EventPosition()` sem especificar `Earliest` ou `Latest` não garante ler todos os eventos. Definir `partitionId = "0"` diretamente não é dinâmico e pode não ser o ID da primeira partição garantidamente em todos os casos, além de ser menos robusto.' }
-        ],
-        hint: 'Para ler *todos* os eventos de uma partição de Event Hubs, você precisa especificar o ponto de partida mais antigo e obter o ID da partição corretamente. Pense nos métodos do SDK para isso.'
-    },
-    {
-        question: 'Você precisa capturar eventos de streaming dos Hubs de Eventos do Azure. Para quais três locais você pode capturar dados? Cada resposta correta apresenta uma solução completa.',
-        options: [
-            { text: 'Armazenamento de Blobs do Azure, Azure Data Lake Storage Gen1 e Azure Data Lake Storage Gen2', isCorrect: true, rationale: 'O recurso de Captura de Hubs de Eventos do Azure pode fornecer automaticamente os dados de streaming nos Hubs de Eventos para o Armazenamento de Blobs do Azure, o Azure Data Lake Storage Gen1 e o Azure Data Lake Storage Gen2. Esses são os destinos de captura nativamente suportados.' },
-            { text: 'Azure Functions, Armazenamento de Blobs do Azure e Azure Stream Analytics', isCorrect: false, rationale: 'Embora o Azure Functions e o Azure Stream Analytics possam *processar* eventos dos Hubs de Eventos, eles não são destinos de *captura* direta pelo recurso de Captura de Hubs de Eventos para armazenamento de longo prazo de dados brutos de streaming. Eles atuam como consumidores.' },
-            { text: 'Azure Data Lake Storage Gen2, Azure SQL Database e Azure Cosmos DB', isCorrect: false, rationale: 'Azure SQL Database e Azure Cosmos DB não são destinos de captura direta pelo recurso de Captura de Hubs de Eventos para o volume de dados brutos de streaming. Eles seriam destinos *após* algum processamento ou para dados mais estruturados.' },
-            { text: 'Armazenamento de Filas do Azure, Armazenamento de Tabelas do Azure e Azure Cosmos DB', isCorrect: false, rationale: 'Armazenamento de Filas e Tabelas, e Cosmos DB não são destinos nativos para o recurso de Captura de Hubs de Eventos para dados de streaming em larga escala, que requerem armazenamento de objetos ou data lake.' }
-        ],
-        hint: 'O recurso de "Captura" dos Hubs de Eventos permite despejar automaticamente o fluxo de dados em um serviço de armazenamento. Quais serviços de armazenamento são os principais destinos para isso?'
-    },
-    {
-        question: 'Uma empresa está usando a Grade de Eventos do Azure para processar eventos de pedidos de comércio eletrônico. O sistema inclui várias fontes de eventos, como o Armazenamento de Blobs do Azure, o Azure Functions e serviços de terceiros. A empresa deseja garantir que o mecanismo de entrega de eventos seja robusto e possa lidar com diferentes cenários de falha, com perda mínima. Você precisa criar uma estratégia de entrega de eventos que garanta alta confiabilidade, mesmo quando os eventos resultam de códigos de resposta 400 ou 413. O que você deve fazer?',
-        options: [
-            { text: 'Habilite a colocação em fila de mensagens mortas (dead-lettering) para capturar eventos que não são entregues dentro do agendamento de repetição especificado.', isCorrect: true, rationale: 'Habilitar o dead-lettering ajuda a capturar eventos que não podem ser entregues (seja por falhas no manipulador, erros HTTP como 400/413, ou exceder o número de tentativas de entrega), garantindo que nenhum dado seja perdido durante interrupções temporárias ou problemas de processamento. Isso é crucial para alta confiabilidade e perda mínima.' },
-            { text: 'Aumente o número máximo de tentativas de entrega para um valor muito alto.', isCorrect: false, rationale: 'Aumentar o número máximo de tentativas de entrega não garante a entrega se o sistema está inativo ou se o problema é persistente (como um erro 400 que não se resolve com repetição) e pode levar a atrasos desnecessários. O dead-lettering é mais robusto para perdas.' },
-            { text: 'Configure a validação síncrona do handshake para todas as assinaturas de eventos.', isCorrect: false, rationale: 'A validação síncrona do handshake está relacionada à validação da assinatura do evento (para garantir a autenticidade da origem), não à confiabilidade da *entrega* de eventos ou ao tratamento de falhas na entrega.' },
-            { text: 'Diminua o tempo de vida (TTL) do evento para que eventos falhos sejam descartados rapidamente.', isCorrect: false, rationale: 'A diminuição do TTL do evento (Time To Live) poderá resultar em eventos válidos sendo descartados se o sistema estiver temporariamente indisponível, o que é o oposto do requisito de "perda mínima" e "alta confiabilidade".' }
-        ],
-        hint: 'Para garantir que eventos da Grade de Eventos não sejam perdidos quando não podem ser entregues (ex: erro no endpoint), qual mecanismo de resiliência captura esses eventos para inspeção ou reprocessamento posterior?'
-    },
-    {
-        question: 'Uma empresa está desenvolvendo um aplicativo multilocatário que lidará com grandes volumes de eventos de várias fontes. O aplicativo precisa ser capaz de processar e analisar esses eventos em tempo real. Você precisa criar um serviço de ingestão de eventos que forneça isolamento de dados e isolamento de desempenho para evitar problemas barulhentos de vizinhos, considerando também a complexidade operacional e o custo. Qual modelo de isolamento dos Hubs de Eventos você deve implementar?',
-        options: [
-            { text: 'Namespace dedicado para cada locatário', isCorrect: true, rationale: 'Um namespace dedicado para cada locatário fornece o nível mais alto de isolamento de dados e desempenho em Hubs de Eventos. Isso é essencial para evitar problemas de "vizinhos barulhentos" (onde o consumo de recursos de um locatário afeta o desempenho de outro) em um aplicativo multilocatário que lida com grandes volumes de eventos, garantindo que a carga de um locatário não impacte os demais.' },
-            { text: 'Namespace compartilhado com hubs de eventos dedicados para cada locatário', isCorrect: false, rationale: 'Um namespace compartilhado com hubs de eventos dedicados para cada locatário oferece um isolamento médio, mas ainda pode levar a problemas de vizinhos barulhentos no nível do namespace (recursos compartilhados como unidades de throughput do namespace).' },
-            { text: 'Namespace compartilhado e hubs de eventos para todos os locatários', isCorrect: false, rationale: 'Um namespace compartilhado e hubs de eventos para todos os locatários fornece o nível mais baixo de isolamento e não é adequado para os requisitos de isolamento de dados e desempenho para evitar problemas de vizinhos barulhentos.' },
-            { text: 'Multilocação confiável com assinaturas de acesso compartilhado', isCorrect: false, rationale: 'Multilocação confiável com assinaturas de acesso compartilhado não é um modelo de isolamento de infraestrutura, mas sim uma maneira de gerenciar o acesso em um ambiente compartilhado, o que não garante isolamento de desempenho.' }
-        ],
-        hint: 'Para um aplicativo multilocatário de ingestão de eventos com Hubs de Eventos que requer o *maior nível de isolamento* de dados e desempenho para evitar "vizinhos barulhentos", qual estratégia de provisionamento de recursos você utilizaria?'
-    },
-    {
-        question: 'Você cria um tópico do Barramento de Serviço do Azure com um tempo de vida útil padrão de 10 minutos. Você precisa enviar mensagens para este tópico com um tempo de vida útil de 15 minutos. A solução não deve afetar outros aplicativos que estão usando o tópico. O que você deve recomendar?',
-        options: [
-            { text: 'Crie um novo tópico com uma vida útil padrão de 15 minutos. Envie as mensagens para este tópico.', isCorrect: true, rationale: 'Para evitar afetar aplicativos existentes, o tempo de vida útil do tópico existente não deve ser alterado. Em vez disso, um novo tópico com o tempo de vida útil padrão de 15 minutos (que é o mínimo necessário) deve ser criado para enviar essas mensagens específicas. O tempo de vida de uma mensagem não pode ser maior do que o tempo de vida do tópico para o qual ela é enviada.' },
-            { text: 'Altere a vida útil da mensagem específica para 15 minutos.', isCorrect: false, rationale: 'Um tempo de vida útil em nível de mensagem não pode ser maior do que o tempo de vida útil padrão configurado no tópico (10 minutos, neste caso). Se tentar definir 15 minutos em uma mensagem para um tópico de 10 minutos, a mensagem será limitada a 10 minutos.' },
-            { text: 'Altere o tempo de vida útil padrão do tópico existente para 15 minutos.', isCorrect: false, rationale: 'Alterar o tempo de vida útil padrão do tópico existente afetaria outros aplicativos que estão usando o tópico, o que contradiz o requisito de "não deve afetar outros aplicativos".' },
-            { text: 'Crie uma nova fila com uma vida útil padrão de 15 minutos e envie as mensagens para esta fila.', isCorrect: false, rationale: 'O requisito é enviar mensagens para um *tópico*, não uma fila. Filas e tópicos são diferentes no Service Bus.' }
-        ],
-        hint: 'No Azure Service Bus, se você precisa de um tempo de vida maior para mensagens em um tópico sem afetar os consumidores existentes, e sabendo que o tempo de vida da mensagem não pode exceder o do tópico, qual é a melhor abordagem para a arquitetura?'
-    },
-    {
-        question: 'Você tem uma fila do Barramento de Serviço do Azure. Você precisa garantir que um editor possa enviar mensagens para um tópico e que vários assinantes possam se tornar elegíveis para consumir as mensagens. Qual padrão de roteamento de mensagens você deve usar?',
-        options: [
-            { text: 'solicitação/resposta multicast (publicar/assinar)', isCorrect: true, rationale: 'O padrão de "solicitação/resposta multicast" ou mais comumente "publicar/assinar" (publish/subscribe) com tópicos e assinaturas no Azure Service Bus permite que um editor envie uma mensagem para um tópico e que vários assinantes (cada um com sua própria assinatura) se tornem elegíveis para consumir essa mensagem de forma independente, recebendo suas próprias cópias. Isso é o que "multicast" implica.' },
-            { text: 'fila ponto a ponto', isCorrect: false, rationale: 'O padrão de fila ponto a ponto (point-to-point queue) permite que um editor envie uma mensagem para uma fila e que um único consumidor receba essa mensagem. Vários assinantes não podem consumir a mesma mensagem de uma fila de forma independente.' },
-            { text: 'sessão de mensagem', isCorrect: false, rationale: 'As sessões de mensagem no Service Bus permitem a multiplexação de fluxos de mensagens relacionadas por meio de uma única fila ou assinatura, garantindo a ordenação e o processamento de mensagens agrupadas. No entanto, não é um padrão para múltiplos assinantes consumirem a *mesma* mensagem de um tópico.' },
-            { text: 'multiplexação de resposta', isCorrect: false, rationale: 'A multiplexação de resposta permite que vários editores compartilhem uma fila de resposta para cenários de solicitação/resposta, mas uma mensagem não pode ser consumida por vários assinantes de forma independente usando este conceito para tópicos.' }
-        ],
-        hint: 'Para um cenário onde uma única mensagem de um editor precisa ser entregue a múltiplas entidades consumidoras que operam de forma independente, qual padrão de comunicação do Service Bus é o mais adequado?'
-    },
-    {
-        question: 'Uma empresa de serviços financeiros está implementando um sistema para processar transações recebidas como mensagens. O sistema precisa garantir que as transações sejam processadas apenas uma vez e, na ordem exata, sejam recebidas para manter a integridade dos dados. Você precisa criar uma solução de mensagens que garanta a entrega e o processamento de mensagens PEPS (primeiro a entrar, primeiro a sair). Quais dois serviços você deve usar?',
-        options: [
-            { text: 'Barramento de Serviço do Azure com detecção duplicada e Fila do Barramento de Serviço com a opção Sessões habilitada', isCorrect: true, rationale: 'O Barramento de Serviço do Azure com sessões habilitadas permite o processamento PEPS (Primeiro a Entrar, Primeiro a Sair) usando sessões para garantir que as mensagens relacionadas sejam tratadas na ordem em que são recebidas. A detecção duplicada ajuda a garantir que o sistema não processe a mesma transação mais de uma vez (processamento "apenas uma vez"), o que é crucial para a integridade de dados em sistemas financeiros.' },
-            { text: 'Armazenamento de Filas do Azure e Grade de Eventos do Azure', isCorrect: false, rationale: 'O Armazenamento de Filas do Azure não garante o processamento PEPS nem tem detecção duplicada nativa. A Grade de Eventos do Azure é um serviço de roteamento de eventos e não fornece garantias de PEPS ou sessões de mensagem.' },
-            { text: 'Hubs de Eventos do Azure e Azure Functions com gatilhos HTTP', isCorrect: false, rationale: 'Os Hubs de Eventos do Azure são para ingestão de streaming de dados em larga escala e não garantem processamento PEPS ou detecção duplicada para mensagens individuais. Azure Functions com gatilhos HTTP não são um mecanismo de fila ou tópico com essas garantias.' },
-            { text: 'Barramento de Serviço do Azure com detecção duplicada e Hubs de Eventos do Azure', isCorrect: false, rationale: 'Embora a detecção duplicada do Service Bus seja correta, os Hubs de Eventos não fornecem as sessões necessárias para garantir o processamento PEPS para mensagens individuais em cenários transacionais como este.' }
-        ],
-        hint: 'Para garantir o processamento de mensagens PEPS (FIFO) e a detecção de duplicatas em um sistema de mensagens transacionais, quais recursos específicos do Azure Service Bus você deve habilitar?'
     }
 ];
 
-// Perguntas para o EXAME 2 (34 Questões)
+// Perguntas para o EXAME 2 (24 Questões)
 const questionsExam2 = [
     {
         question: 'Você está desenvolvendo um Aplicativo Web do Azure que processa pedidos de clientes. O aplicativo requer uma tarefa em segundo plano do Serviço de Aplicativo para lidar com operações assíncronas, como o envio de e-mails de confirmação de pedidos e a atualização do estoque em resposta a novos pedidos de clientes. Você precisa de uma solução que possa ser executada continuamente ou conforme um cronograma no ambiente do Serviço de Aplicativo do Azure. Você planeja usar o WebJobs SDK para integrar com uma fila do Azure Storage para processar solicitações de pedidos recebidas com eficiência. Qual das seguintes opções atenderá a esse requisito?',
@@ -781,7 +639,7 @@ const questionsExam2 = [
     {
         question: 'Você transfere arquivos confidenciais de servidores de arquivos locais para o Armazenamento de Blobs do Azure e protege chaves de criptografia com o Azure Key Vault. Você também usa a Conta de Armazenamento do Azure para gerenciar o acesso seguro e precisa garantir que as chaves excluídas possam ser recuperadas por até 90 dias para evitar perdas acidentais. Você planeja integrar APIs do Azure Key Vault em scripts de automação para gerenciamento de chaves. Qual solução garante que as chaves excluídas possam ser recuperadas por até 90 dias?',
         options: [
-            { text: 'Habilite a proteção de exclusão e limpeza suave usando o comando: `az keyvault update --enable-soft-delete true --enable-purge-protection true`', isCorrect: true, rationale: 'O recurso de exclusão reversível (soft delete) permite a recuperação de chaves, segredos e certificados por um período configurável (7 a 90 dias). A proteção contra limpeza (purge protection) impede a exclusão permanente de um cofre ou objeto no estado excluído até que o período de retenção expire. Habilitar ambas garante que as chaves excluídas permaneçam recuperáveis e não possam ser apagadas permanentemente antes do período de retenção expirar.' },
+            { text: 'Habilite a proteção de exclusão e limpeza suave usando o comando: `az keyvault update --enable-soft-delete true --enable-purge-protection true`', isCorrect: true, rationale: 'O recurso de exclusão reversível (soft delete) permite a recuperação de cofres e objetos excluídos (chaves, segredos, certificados) por um período configurável (7 a 90 dias). A proteção contra limpeza (purge protection) impede a exclusão permanente de um cofre ou objeto no estado excluído até que o período de retenção expire. Ambas devem ser habilitadas para garantir a retenção obrigatória e impedir a remoção imediata.' },
             { text: 'Use o `Add-AzKeyVaultKey` cmdlet do PowerShell.', isCorrect: false, rationale: 'Este comando é usado principalmente para criar ou importar novas chaves para o Azure Key Vault, mas não habilita a exclusão reversível ou a proteção contra limpeza.' },
             { text: 'Habilite o Azure Key Vault Private Link para proteger o acesso e impedir exclusões de chaves não autorizadas.', isCorrect: false, rationale: 'O Private Link apenas fornece segurança de rede restringindo o acesso ao Key Vault por meio de endpoints privados. Ele não impede a exclusão de chaves nem garante a recuperação delas.' },
             { text: 'Configure uma Política de Acesso ao Azure Key Vault para restringir operações de exclusão apenas a usuários específicos.', isCorrect: false, rationale: 'Restringir políticas de acesso pode ajudar a limitar exclusões não autorizadas, mas não fornece um mecanismo de recuperação caso uma chave seja excluída. Sem a exclusão reversível habilitada, as chaves excluídas são perdidas permanentemente.' }
@@ -925,11 +783,141 @@ const questionsExam2 = [
             { text: 'Logs do Azure Monitor com consulta Kusto', isCorrect: false, rationale: 'O Azure Monitor Logs com Kusto Query é usado para consultar e analisar dados de log a fim de identificar tendências, padrões ou anomalias. Embora possa ajudar a identificar exceções, não fornece acesso direto ao estado de execução do aplicativo no momento de uma exceção ou a valores de variáveis, como o Snapshot Debugger.' }
         ],
         hint: 'Para examinar o estado do código-fonte e os valores das variáveis *no momento de uma exceção* em produção, sem impactar o desempenho, qual recurso do Application Insights é o mais adequado?'
+    },
+    {
+        question: 'Você tem dois Hyper-V hosts named Host1 and Host2. Host1 has an Azure virtual machine named VM1 that was deployed by using a custom Azure Resource Manager template. You need to move VM1 to Host2. [cite_start]What should you do? [cite: 836, 837, 838, 839]',
+        options: [
+            [cite_start],{ text: 'From the Update management blade, click Enable. [cite: 840]', isCorrect: false, rationale: 'A lâmina "Update management" e o clique em "Enable" não são as ações corretas para mover uma máquina virtual entre hosts Hyper-V. Isso está relacionado ao gerenciamento de atualizações, não à migração de VM.' },
+            [cite_start],{ text: 'From the Overview blade, move VM1 to a different subscription. [cite: 841]', isCorrect: false, rationale: 'Mover VM1 para uma assinatura diferente a partir da lâmina "Overview" não moverá a VM para outro host Hyper-V (Host2). Isso é uma operação de gerenciamento de recursos no Azure, não uma migração de máquina virtual subjacente entre hosts físicos.' },
+            [cite_start],{ text: 'From the Redeploy blade, click Redeploy. [cite: 842]', isCorrect: true, rationale: 'A opção "Redeploy" (Reimplantar) de uma máquina virtual no Azure recria a VM no mesmo grupo de disponibilidade (se aplicável) e, o mais importante, a migra para um *novo host* no cluster do Azure. Isso atende ao requisito de mover a VM1 para o Host2 (assumindo que Host2 é o novo host no qual o Azure a realocará).' },
+            [cite_start],{ text: 'From the Profile blade, modify the usage location. [cite: 843]', isCorrect: false, rationale: 'A lâmina "Profile" e a modificação da localização de uso não são as ações corretas para migrar uma VM entre hosts. A localização de uso refere-se à região do Azure, não ao host físico.' }
+        ],
+        hint: 'Para migrar uma VM do Azure para um novo host subjacente (sem precisar de migração Hyper-V manual), qual operação do portal do Azure ou CLI você usaria para forçar uma realocação?',
+        image: 'no_image_provided.png' // Imagem não fornecida, usar placeholder
+    },
+    {
+        question: 'Você baixou um modelo do Azure Resource Manager para implantar várias máquinas virtuais. O modelo é baseado em uma máquina virtual atual, mas deve ser adaptado para fazer referência a uma senha administrativa. Você precisa garantir que a senha não seja armazenada em texto simples. Você está se preparando para criar os componentes necessários para atingir seu objetivo. Quais dos seguintes você deve criar para atingir seu objetivo?',
+        options: [
+            { text: 'An Azure Key Vault and An access policy', isCorrect: true, rationale: 'Para garantir que a senha administrativa não seja armazenada em texto simples, você deve usar um Azure Key Vault para armazenar a senha com segurança. [cite_start]Em seguida, você precisa criar uma política de acesso no Key Vault para conceder ao modelo ARM (ou à identidade que implanta o modelo) permissão para ler o segredo que contém a senha. [cite: 854, 856]' },
+            { text: 'An Azure Storage account and An Azure policy', isCorrect: false, rationale: 'Uma conta de armazenamento do Azure é usada para armazenar dados, mas não é a solução segura para senhas. [cite_start]Uma política do Azure é usada para impor padrões, mas não para armazenar segredos. [cite: 854]' },
+            { text: 'Azure Active Directory (AD) Identity Protection and A backup policy', isCorrect: false, rationale: 'O Azure AD Identity Protection ajuda a detectar e remediar riscos de identidade, mas não armazena senhas. [cite_start]Uma política de backup é para backups de dados, não para gerenciamento de senhas. [cite: 854]' },
+            [cite_start],{ text: 'An Azure Key Vault and A backup policy', isCorrect: false, rationale: 'Embora um Azure Key Vault seja correto para armazenar a senha, uma política de backup não é o componente necessário para *acessar* a senha do Key Vault para a implantação do modelo ARM. [cite: 854]' }
+        ],
+        hint: 'Para armazenar senhas de forma segura e acessá-las programaticamente em modelos ARM, qual serviço de gerenciamento de segredos e qual configuração de permissão você precisaria?',
+        image: 'no_image_provided.png' // Imagem não fornecida, usar placeholder
+    },
+    {
+        question: 'Sua empresa tem um cluster Azure Kubernetes Service (AKS) que você gerencia a partir de um dispositivo associado ao Azure AD. O cluster está localizado em um grupo de recursos. Desenvolvedores criaram um aplicativo chamado MyApp. MyApp foi empacotado em uma imagem de contêiner. Você precisa implantar o arquivo de manifesto YAML para o aplicativo. Solução: Você instala a CLI do Azure no dispositivo e executa o comando `kubectl apply -f myapp.yaml`. Isso atende ao objetivo?',
+        options: [
+            { text: 'Sim', isCorrect: true, rationale: 'A instalação da CLI do Azure é necessária para interagir com os recursos do Azure, incluindo AKS. O comando `kubectl apply -f myapp.yaml` é o comando padrão e correto do Kubernetes para implantar um manifesto YAML (que descreve o aplicativo) em um cluster AKS. [cite_start]Portanto, essa solução atende ao objetivo. [cite: 861, 862, 865]' },
+            [cite_start],{ text: 'Não', isCorrect: false, rationale: 'A solução proposta é a maneira padrão e eficaz de implantar um manifesto YAML em um cluster Kubernetes gerenciado pelo Azure. [cite: 861, 862, 865]' }
+        ],
+        hint: 'Para implantar uma aplicação em um cluster Kubernetes (AKS) a partir de um arquivo YAML, qual ferramenta de linha de comando e qual comando específico são utilizados?',
+        image: 'no_image_provided.png' // Imagem não fornecida, usar placeholder
+    },
+    {
+        question: 'Sua empresa tem um cluster Azure Kubernetes Service (AKS) que você gerencia a partir de um dispositivo associado ao Azure AD. O cluster está localizado em um grupo de recursos. Desenvolvedores criaram um aplicativo chamado MyApp. MyApp foi empacotado em uma imagem de contêiner. Você precisa implantar o arquivo de manifesto YAML para o aplicativo. Solução: Você instala o cliente docker no dispositivo e executa o comando `docker run -it microsoft/azure-cli:0.10.17`. Isso atende ao objetivo?',
+        options: [
+            { text: 'Sim', isCorrect: false, rationale: 'O comando `docker run` é usado para executar um contêiner Docker *localmente* ou em um *host Docker*, não para implantar um arquivo de manifesto YAML em um cluster Kubernetes (AKS). [cite_start]Embora o cliente Docker seja usado para construir e gerenciar imagens, ele não é a ferramenta para implantação em AKS via YAML. [cite: 873, 874, 877]' },
+            { text: 'Não', isCorrect: true, rationale: 'O comando `docker run` é usado para executar um contêiner Docker *localmente* ou em um *host Docker*, não para implantar um arquivo de manifesto YAML em um cluster Kubernetes (AKS). [cite_start]A ferramenta correta para isso seria `kubectl`. [cite: 873, 874, 877]' }
+        ],
+        hint: 'O comando `docker run` é para executar contêineres Docker. É ele que você usa para implantar um arquivo YAML em um cluster Kubernetes?',
+        image: 'no_image_provided.png' // Imagem não fornecida, usar placeholder
+    },
+    {
+        question: 'Sua empresa tem um aplicativo web chamado WebApp1. Você usa o WebJobs SDK para projetar uma tarefa em segundo plano do App Service acionada que invoca automaticamente uma função no código toda vez que novos dados são recebidos em uma fila. Você está se preparando para configurar os processos de serviço em um item de dados da fila. Qual dos seguintes serviços você deve usar?',
+        options: [
+            [cite_start],{ text: 'Logic Apps', isCorrect: false, rationale: 'Logic Apps são ferramentas de orquestração de fluxo de trabalho sem código/baixo código, não a solução para executar funções de código acionadas por fila usando o WebJobs SDK em um App Service. [cite: 885, 886]' },
+            { text: 'WebJobs', isCorrect: true, rationale: 'WebJobs é um recurso do Azure App Service que permite executar programas ou scripts em segundo plano. [cite_start]O WebJobs SDK é projetado especificamente para simplificar o desenvolvimento de tarefas em segundo plano acionadas por eventos (como dados em uma fila) dentro do contexto de um aplicativo Web do App Service. [cite: 887, 890]' },
+            [cite_start],{ text: 'Flow', isCorrect: false, rationale: 'Flow (agora Microsoft Power Automate) é uma ferramenta de automação de fluxo de trabalho, similar ao Logic Apps, e não se integra diretamente com o WebJobs SDK ou é usada para o cenário de processamento de código acionado por fila no App Service. [cite: 888]' },
+            { text: 'Functions', isCorrect: false, rationale: 'Azure Functions é uma solução de computação serverless baseada em eventos, mas é uma alternativa ao WebJobs, não o serviço que você usaria *com o WebJobs SDK* dentro de um App Service. [cite_start]A questão especifica o uso do WebJobs SDK. [cite: 889]' }
+        ],
+        hint: 'Qual serviço do Azure App Service é projetado para executar tarefas em segundo plano e se integra ao WebJobs SDK?',
+        image: 'no_image_provided.png' // Imagem não fornecida, usar placeholder
+    },
+    {
+        question: 'Sua empresa tem uma assinatura do Azure. Você precisa implantar várias máquinas virtuais do Azure na assinatura usando modelos do Azure Resource Manager (ARM). As máquinas virtuais serão incluídas em um único conjunto de disponibilidade. Você precisa garantir que o modelo ARM permita que o maior número possível de máquinas virtuais permaneça acessível em caso de falha de tecido ou manutenção. Qual dos seguintes é o valor que você deve configurar para a propriedade `platformFaultDomainCount`?',
+        options: [
+            { text: '10', isCorrect: false, rationale: 'O valor máximo recomendado para `platformFaultDomainCount` é 3, não 10. A opção para maximizar a disponibilidade é escolher o valor máximo permitido para domínios de falha, que em muitos cenários é 3. No entanto, a opção "Max Value" é a resposta mais geral e correta para *maximizar* a disponibilidade, implicando o maior número suportado pelo Azure (geralmente 3 para a maioria das regiões).' },
+            { text: '30', isCorrect: false, rationale: '30 é um valor muito alto e não corresponde a um número suportado para domínios de falha.' },
+            { text: 'Min Value', isCorrect: false, rationale: 'O valor mínimo de domínios de falha (ex: 1) não maximizaria a disponibilidade, pois todas as VMs estariam no mesmo domínio de falha ou em muito poucos.' },
+            { text: 'Max Value', isCorrect: true, rationale: 'Para garantir que o maior número possível de VMs permaneça acessível em caso de falha de hardware ou manutenção (ou seja, maximizar a disponibilidade), você deve configurar o valor máximo de domínios de falha (`platformFaultDomainCount`), que é 3 para a maioria das regiões do Azure. [cite_start]A opção "Max Value" é a que melhor representa essa intenção. [cite: 900, 904]' }
+        ],
+        hint: 'Para maximizar a resiliência contra falhas de hardware em um conjunto de disponibilidade, você deve distribuir suas VMs pelo maior número possível de domínios de falha. Qual é a melhor forma de expressar isso?',
+        image: 'no_image_provided.png' // Imagem não fornecida, usar placeholder
+    },
+    {
+        question: 'Sua empresa tem uma assinatura do Azure. Você precisa implantar várias máquinas virtuais do Azure na assinatura usando modelos do Azure Resource Manager (ARM). As máquinas virtuais serão incluídas em um único conjunto de disponibilidade. Você precisa garantir que o modelo ARM permita que o maior número possível de máquinas virtuais permaneça acessível em caso de falha de tecido ou manutenção. Qual dos seguintes é o valor que você deve configurar para a propriedade `platformUpdateDomainCount`?',
+        options: [
+            [cite_start],{ text: '10', isCorrect: true, rationale: 'Para um conjunto de disponibilidade, o valor padrão e máximo recomendado para `platformUpdateDomainCount` é 5 ou 10. Para maximizar a disponibilidade durante atualizações planejadas, você deve distribuir as VMs em 5 domínios de atualização no máximo ou 10, dependendo da região e do tamanho da implantação, sendo 10 o valor que oferece a maior distribuição para grandes conjuntos. [cite: 913, 915]' },
+            { text: '20', isCorrect: false, rationale: '20 é um valor muito alto e não corresponde a um número suportado para domínios de atualização.' },
+            { text: '30', isCorrect: false, rationale: '30 é um valor muito alto e não corresponde a um número suportado para domínios de atualização.' },
+            { text: '40', isCorrect: false, rationale: '40 é um valor muito alto e não corresponde a um número suportado para domínios de atualização.' }
+        ],
+        hint: 'Para maximizar a resiliência durante atualizações planejadas em um conjunto de disponibilidade, você deve distribuir suas VMs pelo maior número possível de domínios de atualização. Qual é um valor comum que maximiza essa distribuição?',
+        image: 'no_image_provided.png' // Imagem não fornecida, usar placeholder
+    },
+    {
+        question: 'Você está criando uma conta do Azure Cosmos DB que faz uso da API SQL. Os dados serão adicionados à conta todos os dias por um aplicativo web. Você precisa garantir que uma notificação por e-mail seja enviada quando as informações forem recebidas de dispositivos IoT e que o custo de computação seja reduzido. Você decide implantar um aplicativo de função. Quais dos seguintes você deve configurar o aplicativo de função para usar?',
+        options: [
+            { text: 'Plano de consumo e SendGrid binding', isCorrect: true, rationale: 'Para reduzir o custo de computação para um aplicativo de função (que implica o modelo serverless), o Plano de Consumo é a escolha mais eficiente, pois você paga apenas pelo uso. [cite_start]Para enviar uma notificação por e-mail, o SendGrid binding (associação SendGrid) é a forma mais simples e declarativa de fazer isso no Azure Functions. [cite: 927, 929]' },
+            { text: 'Azure Cosmos DB connector e SendGrid action', isCorrect: false, rationale: 'O conector do Azure Cosmos DB é para entrada/saída de dados do Cosmos DB. [cite_start]SendGrid action é uma ação de Logic Apps/Power Automate, não um binding de Function App. [cite: 927, 929]' },
+            { text: 'Azure Event Hubs binding e SendGrid action', isCorrect: false, rationale: 'Azure Event Hubs binding seria para entrada de dados de Event Hubs, não diretamente do Cosmos DB. [cite_start]SendGrid action é uma ação de Logic Apps/Power Automate. [cite: 927, 929]' },
+            { text: 'Azure Cosmos DB connector e Consumption plan', isCorrect: false, rationale: 'Embora o Cosmos DB connector e o Consumption plan sejam relevantes, a questão pede a solução para *enviar e-mail* e *reduzir custo*. O SendGrid binding é a forma de enviar e-mail com baixo custo de configuração, e o Consumption plan reduz o custo de computação. [cite_start]Faltaria a parte do SendGrid. [cite: 927, 929]' }
+        ],
+        hint: 'Para um aplicativo de função que precisa enviar e-mails com baixo custo, qual plano de hospedagem serverless e qual tipo de associação de saída você usaria?',
+        image: 'no_image_provided.png' // Imagem não fornecida, usar placeholder
+    },
+    {
+        question: 'Você empresa tem uma implantação local de MongoDB, e uma conta Azure Cosmos DB que usa a API MongoDB. Você precisa elaborar uma estratégia para migrar o MongoDB para a conta Azure Cosmos DB. Você inclui a ferramenta Data Management Gateway em sua estratégia de migração. [cite_start][PERGUNTA]: O uso da ferramenta Data Management Gateway está correto para essa estratégia de migração? [cite: 933, 934, 935, 936]',
+        options: [
+            { text: 'Sim, nenhuma mudança é necessária.', isCorrect: false, rationale: 'O Data Management Gateway é uma ferramenta para conectar fontes de dados locais a serviços de nuvem para movimentação de dados e é usado em cenários como Azure Data Factory. [cite_start]No entanto, para migrar dados do MongoDB para o Cosmos DB (API MongoDB), a ferramenta mais apropriada e comumente usada é o `mongorestore` ou outras ferramentas de migração de dados específicas do Cosmos DB. [cite: 938, 935]' },
+            [cite_start],{ text: 'Não, o correto é `mongorestore`.', isCorrect: true, rationale: 'Para migrar dados de uma implantação local do MongoDB para o Azure Cosmos DB (API MongoDB), a ferramenta `mongorestore` é a ferramenta de linha de comando mais adequada e comumente usada para restaurar despejos de banco de dados MongoDB para uma instância de banco de dados. [cite: 938, 941]' },
+            [cite_start],{ text: 'Não, o correto é Azure Storage Explorer.', isCorrect: false, rationale: 'O Azure Storage Explorer é uma ferramenta para gerenciar recursos do Azure Storage (Blobs, Filas, Tabelas, Arquivos), e não é usado para migração direta de dados de um banco de dados MongoDB para o Cosmos DB. [cite: 939]' },
+            [cite_start],{ text: 'Não, o correto é AzCopy.', isCorrect: false, rationale: 'AzCopy é uma ferramenta de linha de comando para copiar dados de e para o Azure Blob, File e Table Storage, mas não para migração de dados de um banco de dados MongoDB para o Cosmos DB. [cite: 940]' }
+        ],
+        hint: 'Para migrar dados de um MongoDB local para o Cosmos DB (API MongoDB), qual ferramenta de linha de comando nativa do MongoDB ou ferramenta específica de migração para Cosmos DB você usaria?',
+        image: 'no_image_provided.png' // Imagem não fornecida, usar placeholder
+    },
+    {
+        question: 'Você está desenvolvendo um aplicativo Web de e-Commerce. Você deseja usar o Azure Key Vault para garantir que os logins no aplicativo Web de e-Commerce sejam protegidos usando a autenticação do Azure App Service e do Azure Active Directory (AAD). O que você deve fazer no aplicativo Web de e-Commerce?',
+        options: [
+            [cite_start],{ text: 'Executar o comando `az keyvault secret`.', isCorrect: false, rationale: 'O comando `az keyvault secret` é uma operação da CLI do Azure para interagir com segredos no Key Vault, não uma ação que você faria no próprio aplicativo Web para habilitar a autenticação AAD. [cite: 949]' },
+            { text: 'Habilitar o Azure AD Connect.', isCorrect: false, rationale: 'O Azure AD Connect é usado para sincronizar diretórios locais com o Azure AD para cenários de identidade híbrida. [cite_start]Ele não é uma configuração do aplicativo Web para habilitar a autenticação de login de usuários. [cite: 950]' },
+            { text: 'Habilitar a Identidade Gerenciada (MSI).', isCorrect: true, rationale: 'Para proteger os logins no aplicativo Web usando a autenticação do Azure App Service e do Azure Active Directory, e integrar-se com o Azure Key Vault (implícito para gerenciar segredos de forma segura para a autenticação), você deve habilitar a Identidade Gerenciada (MSI - Managed Service Identity, agora conhecido como Managed Identities) para o aplicativo Web. [cite_start]Isso permite que o aplicativo se autentique no Azure AD e acesse outros recursos (como o Key Vault) sem gerenciar credenciais. [cite: 951, 953]' },
+            [cite_start],{ text: 'Criar um Service Principal do Azure AD.', isCorrect: false, rationale: 'Criar um Service Principal (Entidade de Serviço) do Azure AD é uma identidade para um aplicativo, mas habilitar a Identidade Gerenciada no App Service é a forma simplificada e recomendada de fazer isso para recursos do Azure, eliminando o gerenciamento manual do Service Principal. [cite: 952]' }
+        ],
+        hint: 'Para proteger os logins de um aplicativo web usando a autenticação do App Service e Azure AD, sem precisar gerenciar credenciais manualmente para acessar segredos como chaves de assinatura, qual recurso de identidade você deve habilitar no aplicativo web?',
+        image: 'no_image_provided.png' // Imagem não fornecida, usar placeholder
     }
 ];
 
-// Determine qual conjunto de perguntas usar
-let currentQuestions = questionsExam1; // Padrão para o Exame 1
+
+// --- Lógica de Distribuição para o Exame 2 ---
+// Para garantir a distribuição balanceada, vamos embaralhar e selecionar.
+// Isso é uma simulação, em um cenário real, você definiria as questões
+// para cada exame explicitamente para maior controle.
+
+// Crie uma cópia profunda das questões para evitar referências
+const allQuestions = JSON.parse(JSON.stringify(questionsExam1.concat(questionsExam2)));
+
+// Embaralha todas as questões de forma aleatória
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+shuffleArray(allQuestions);
+
+// Divide em dois exames de 24 questões
+const questionsExam1_balanced = allQuestions.slice(0, 24);
+const questionsExam2_balanced = allQuestions.slice(24, 48); // As próximas 24 questões
+
+// ATENÇÃO: Escolha qual exame carregar por padrão
+// Mude para questionsExam2_balanced para carregar o segundo exame
+let currentQuestions = questionsExam1_balanced; 
 
 // --- Variáveis de estado do quiz ---
 let currentQuestionIndex = 0;
@@ -948,7 +936,7 @@ const restartButton = document.getElementById('restart-btn');
 const questionCounterSpan = document.getElementById('current-q');
 const totalQuestionCountSpan = document.getElementById('total-q');
 const approvalStatusParagraph = document.getElementById('approval-status');
-const changeExamButton = document.getElementById('change-exam-btn'); // Novo botão para trocar de exame
+const changeExamButton = document.getElementById('change-exam-btn');
 
 // Botões de navegação e dica
 const showHintButton = document.getElementById('show-hint-btn');
@@ -1018,6 +1006,7 @@ function loadQuestion() {
 // Seleciona uma opção e habilita o botão de submissão
 function selectOption(optionDiv, index) {
     // Apenas permita a seleção se a pergunta ainda não foi verificada
+    // Se a pergunta JÁ foi respondida e o botão é "Próxima Pergunta", não permite nova seleção
     if (!userAnswers[currentQuestionIndex] || userAnswers[currentQuestionIndex].isAnswered === false) {
         document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
         optionDiv.classList.add('selected');
@@ -1134,13 +1123,14 @@ function restoreAnswerState(answerState) {
         submitButton.textContent = 'Verificar Resposta';
         submitButton.removeEventListener('click', nextQuestion);
         submitButton.addEventListener('click', checkAnswer);
-        submitButton.disabled = (answerState.selectedOptionIndex === undefined); // Desabilita se nada estiver selecionado
+        submitButton.disabled = (selectedOption === null); // Desabilita se nada estiver selecionado
         
         // Oculta dica e mostra botão de dica
         hintDisplay.style.display = 'none';
         showHintButton.style.display = 'inline-block';
     }
-    selectedOption = answerState.selectedOptionIndex; // Restaura a opção selecionada
+    // selectedOption já foi restaurado no início de loadQuestion, mas redefinir aqui para consistência
+    selectedOption = answerState.selectedOptionIndex; 
 }
 
 
@@ -1188,8 +1178,12 @@ function restartQuiz() {
 
 // --- Lógica para Trocar de Exame ---
 function toggleExam() {
-    // Alterna entre questionsExam1 e questionsExam2
-    currentQuestions = (currentQuestions === questionsExam1) ? questionsExam2 : questionsExam1;
+    // Alterna entre questionsExam1_balanced e questionsExam2_balanced
+    if (currentQuestions === questionsExam1_balanced) {
+        currentQuestions = questionsExam2_balanced;
+    } else {
+        currentQuestions = questionsExam1_balanced;
+    }
     // Reinicia o quiz com o novo conjunto de questões
     restartQuiz();
 }
