@@ -805,7 +805,7 @@ function toggleExam() {
         currentQuestions = questionsExam1_static;
         sessionStorage.setItem('selectedExam', 'exam1');
     }
-    // Reinicia o quiz com o novo conjunto de questões
+    // Reinicia o quiz com o novo conjunto de questões - ok
     restartQuiz();
 }
 

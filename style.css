@@ -5,7 +5,7 @@ body {
     justify-content: center;
     align-items: flex-start; /* Alinha ao topo para não ficar muito centralizado verticalmente */
     min-height: 100vh;
-    margin: 20px; /* Adiciona uma margem para telas maiores */
+    margin: 20px; /* Adiciona uma margem para telas maiores - V */
     color: #333;
 }
 
